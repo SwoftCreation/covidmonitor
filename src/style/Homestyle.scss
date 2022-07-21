@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  button {
+    margin-bottom: auto;
+    background-color: aquamarine;
+    &:hover {
+      transition: 1s;
+      background-color: royalblue;
+    }
+    &:not(:hover) {
+      transition: 1s;
+    }
+  }
+}
