@@ -1,18 +1,25 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  align-content: space-between;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-  button {
-    margin-bottom: auto;
-    background-color: aquamarine;
-    &:hover {
-      transition: 1s;
-      background-color: royalblue;
-    }
-    &:not(:hover) {
-      transition: 1s;
+.wholeContainer {
+  text-align: center;
+  .container {
+    padding-top: 5%;
+    margin-right: 10%;
+    margin-left: 10%;
+    margin-bottom: 5%;
+    border: dashed rgb(4, 82, 65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      margin-bottom: auto;
+      background-color: aquamarine;
+      &:hover {
+        transition: 1s;
+        background-color: royalblue;
+      }
+      &:not(:hover) {
+        transition: 1s;
+      }
     }
   }
 }

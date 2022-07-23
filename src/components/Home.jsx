@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="wholeContainer">
       <Divider>
         <h1>코로나 분석기</h1>
       </Divider>
