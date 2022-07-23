@@ -12,10 +12,9 @@ import {
 } from "recharts";
 import { DatePicker, Space, Divider } from "antd";
 
-import { useCustomEffect } from "../js/CustomHook";
-
 export default function Home() {
   const covidArray = [];
+
   const urlDate = { startDate: "20210507", endDate: "20220720" };
   let encodeKey =
     "YYOHmEDAwZljEHlxr034spej%2FZXNQYJhtr5GbBoPnASFpzzBl2NyvXA9IEVjYYzGSavHftX9aSXQ93GgRL%2B2Ww%3D%3D";
@@ -27,12 +26,28 @@ export default function Home() {
     urlData: "",
     covidData: [],
   });
+  const [comparePer, setPer] = useState({
+    deathCnt: 0,
+    decideCnt: 0,
+  });
 
-  useCustomEffect(() => {
-    console.log("********** covidArray changed--!");
-
-    console.log(covidArray);
-  }, [covidArray]);
+  useEffect(() => {
+    console.log("data changed");
+    if (covidArray.length !== 0) {
+      setPer({
+        decideCnt:
+          (covidArray[covidArray.length - 1].decideCnt /
+            covidArray[0].decideCnt) *
+            100 -
+          100,
+        deathCnt:
+          (covidArray[covidArray.length - 1].deathCnt /
+            covidArray[0].deathCnt) *
+            100 -
+          100,
+      });
+    }
+  });
 
   // axios 시작
   const getApiData = async () => {
@@ -60,20 +75,27 @@ export default function Home() {
 
   return (
     <div>
-      <Divider>코로나 확진자 정보</Divider>
-      <h1>공공데이터포털</h1>
+      <Divider>
+        <h1>코로나 분석기</h1>
+      </Divider>
+      <p>시작 날짜 선택 후 종료 날짜 선택</p>
       <p>데이터 로드: {data.isLoading === true ? "미완료" : "완료"}</p>
 
       <div className="container">
         <Space direction="vertical">
-          <DatePicker onChange={dateChanged1} />
-          <DatePicker onChange={dateChanged2} />
+          <DatePicker onChange={dateChanged1} placeholder="시작날짜" />
+          <DatePicker onChange={dateChanged2} placeholder="종료날짜" />
         </Space>
 
         <br />
         <hr />
         <br />
         <h3>확진자 추이</h3>
+        {comparePer && (
+          <p>{`시작날짜 대비 ${comparePer.decideCnt.toFixed(
+            3
+          )}% 증가하였습니다`}</p>
+        )}
         <LineChart
           width={500}
           height={300}
@@ -99,6 +121,11 @@ export default function Home() {
         </LineChart>
         <hr />
         <h3>사망자 추이</h3>
+        {comparePer && (
+          <p>{`시작날짜 대비 ${comparePer.deathCnt.toFixed(
+            3
+          )}% 증가하였습니다`}</p>
+        )}
         <LineChart
           width={500}
           height={300}
