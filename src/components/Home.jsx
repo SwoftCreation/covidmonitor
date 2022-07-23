@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { DatePicker, Space } from "antd";
+import { DatePicker, Space, Divider } from "antd";
 
 import { useCustomEffect } from "../js/CustomHook";
 
@@ -60,8 +60,8 @@ export default function Home() {
 
   return (
     <div>
-      <h1>코로나 확진자 정보 - 공공데이터포털</h1>
-
+      <Divider>코로나 확진자 정보</Divider>
+      <h1>공공데이터포털</h1>
       <p>데이터 로드: {data.isLoading === true ? "미완료" : "완료"}</p>
 
       <div className="container">
@@ -128,7 +128,7 @@ export default function Home() {
 
       {data.urlData &&
         data.urlData.map((element, index) => {
-          covidArray.push(element);
+          covidArray.unshift(element);
           console.log("pushed into array");
 
           // return (
