@@ -11,10 +11,15 @@ import {
   Legend,
 } from "recharts";
 import { DatePicker, Space, Divider } from "antd";
+import {
+  DashboardOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  RiseOutlined,
+  FallOutlined,
+} from "@ant-design/icons";
 
 export default function Home() {
-  const covidArray = [];
-
   const urlDate = { startDate: "20210507", endDate: "20220720" };
   let encodeKey =
     "YYOHmEDAwZljEHlxr034spej%2FZXNQYJhtr5GbBoPnASFpzzBl2NyvXA9IEVjYYzGSavHftX9aSXQ93GgRL%2B2Ww%3D%3D";
@@ -26,28 +31,6 @@ export default function Home() {
     urlData: "",
     covidData: [],
   });
-  const [comparePer, setPer] = useState({
-    deathCnt: 0,
-    decideCnt: 0,
-  });
-
-  useEffect(() => {
-    console.log("data changed");
-    if (covidArray.length !== 0) {
-      setPer({
-        decideCnt:
-          (covidArray[covidArray.length - 1].decideCnt /
-            covidArray[0].decideCnt) *
-            100 -
-          100,
-        deathCnt:
-          (covidArray[covidArray.length - 1].deathCnt /
-            covidArray[0].deathCnt) *
-            100 -
-          100,
-      });
-    }
-  });
 
   // axios 시작
   const getApiData = async () => {
@@ -57,7 +40,7 @@ export default function Home() {
       setData({
         ...data,
         isLoading: false,
-        urlData: response.data.response.body.items.item,
+        urlData: response.data.response.body.items.item.reverse(),
       });
     });
   };
@@ -76,10 +59,16 @@ export default function Home() {
   return (
     <div className="wholeContainer">
       <Divider>
-        <h1>코로나 분석기</h1>
+        <h1>
+          <DashboardOutlined />
+          &nbsp;코로나 분석기
+        </h1>
       </Divider>
       <p>시작 날짜 선택 후 종료 날짜 선택</p>
-      <p>데이터 로드: {data.isLoading === true ? "미완료" : "완료"}</p>
+      <p>
+        데이터 호출여부:{" "}
+        {data.isLoading === true ? <CloseOutlined /> : <CheckOutlined />}
+      </p>
 
       <div className="container">
         <Space direction="vertical">
@@ -91,15 +80,21 @@ export default function Home() {
         <hr />
         <br />
         <h3>확진자 추이</h3>
-        {comparePer && (
-          <p>{`시작날짜 대비 ${comparePer.decideCnt.toFixed(
-            3
-          )}% 증가하였습니다`}</p>
+        {data.urlData && (
+          <p>
+            {`${(
+              (data.urlData[data.urlData.length - 1].decideCnt /
+                data.urlData[0].decideCnt) *
+                100 -
+              100
+            ).toFixed(3)} %`}
+            <RiseOutlined />
+          </p>
         )}
         <LineChart
           width={500}
           height={300}
-          data={covidArray}
+          data={data.urlData}
           margin={{
             top: 5,
             right: 30,
@@ -121,15 +116,21 @@ export default function Home() {
         </LineChart>
         <hr />
         <h3>사망자 추이</h3>
-        {comparePer && (
-          <p>{`시작날짜 대비 ${comparePer.deathCnt.toFixed(
-            3
-          )}% 증가하였습니다`}</p>
+        {data.urlData && (
+          <p>
+            {`${(
+              (data.urlData[data.urlData.length - 1].deathCnt /
+                data.urlData[0].deathCnt) *
+                100 -
+              100
+            ).toFixed(3)} %`}
+            <RiseOutlined />
+          </p>
         )}
         <LineChart
           width={500}
           height={300}
-          data={covidArray}
+          data={data.urlData}
           margin={{
             top: 5,
             right: 30,
@@ -153,17 +154,7 @@ export default function Home() {
 
       <hr />
 
-      {data.urlData &&
-        data.urlData.map((element, index) => {
-          covidArray.unshift(element);
-          console.log("pushed into array");
-
-          // return (
-          //   <p
-          //     key={index}
-          //   >{`날짜 ${element.createDt} --- 사망자 ${element.deathCnt}명`}</p>
-          // );
-        })}
+      <hr />
     </div>
   );
 }
